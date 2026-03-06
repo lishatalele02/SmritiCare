@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmritiCare Diagnosis Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: #191970;
+            padding: 20px;
+            background-image: url('/static/images/UI bg image_SmritiCAre.jpg'); /* Replace with the actual path to your image */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);  /* Optional for better text visibility */
+        }
+
+        .report-section {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .report-section h2 {
+            color: #191970;
+        }
+
+        .report-section p {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        /* Button Container */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #191970;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #B9D9EB;
+            color: black;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>SmritiCare Diagnosis Report</h1>
+    </header>
+
+    <main class="container">
+        <section class="report-section">
+            <h2 align="center">Diagnosis Report</h2>
+            <p><strong>Name:</strong> {{ name }}</p>
+            <p><strong>Age:</strong> {{ age }}</p>
+            <p><strong>Gender:</strong> {{ gender }}</p>
+            <p><strong>Stage Detected:</strong> {{ stage }}</p>
+            <p><strong>What it means:</strong> {{ description }}</p>  <!-- Ensure this is here -->
+            <p><strong>Recommended Doctor:</strong> {{ doctor }}</p>
+            <p><strong>Prescribed Medicines:</strong> {{ medicines }}</p>
+            <p><strong>Precautions:</strong> {{ precautions }}</p>
+
+
+            <!-- Button Container (Back and Download) -->
+            <div class="button-container">
+                <button onclick="goBack()">Back to Edit</button>
+                <button onclick="downloadPDF()">Download PDF</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 SmritiCare. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+       
+       function goBack() {
+            window.location.href = "{{ url_for('index') }}";  // Redirect to the Diagnosis page
+        }
+               
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.setTextColor(25, 25, 112);
+        doc.text("SmritiCare Diagnosis Report", 70, 20);
+
+        doc.setLineWidth(0.5);
+        doc.line(10, 25, 200, 25);
+
+        doc.setFontSize(16);
+        doc.setFont("times", "bold");
+        doc.setTextColor(0, 0, 0);
+        doc.text("Patient Information:", 14, 40);
+
+        doc.setFontSize(12);
+        doc.setFont("times", "normal");
+
+        // Fetch values from the HTML page dynamically
+        const name = "{{ name }}";  
+        const age = "{{ age }}";  
+        const gender = "{{ gender }}";  
+        const stage = "{{ stage }}";  
+        const doctor = "{{ doctor }}";  
+        const medicines = "{{ medicines }}";  
+        const precautions = "{{ precautions }}";  
+
+        let y = 50;
+        doc.text(`Name: ${name}`, 14, y);
+        y += 10;
+        doc.text(`Age: ${age}`, 14, y);
+        y += 10;
+        doc.text(`Gender: ${gender}`, 14, y);
+        y += 10;
+        doc.text(`Stage Detected: ${stage}`, 14, y);
+        
+        y += 15;
+        doc.setFontSize(16);
+        doc.setFont("times", "bold");
+        doc.text("Medical Recommendations:", 14, y);
+
+        doc.setFontSize(12);
+        doc.setFont("times", "normal");
+        y += 10;
+        doc.text(`Recommended Doctor: ${doctor}`, 14, y);
+        y += 10;
+        doc.text(`Prescribed Medicines: ${medicines}`, 14, y);
+        y += 10;
+        doc.text(`Precautions: ${precautions}`, 14, y);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text("© 2025 SmritiCare. All rights reserved.", 70, 280);
+
+        doc.save("diagnosis_report.pdf");
+    }
+</script>
+
+
+</body>
+</html>

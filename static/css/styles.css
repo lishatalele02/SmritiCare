@@ -1,0 +1,256 @@
+/* General Reset */
+body, h1, h2, p, a, form, input, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    background: url('UI bg image_SmritiCAre.jpg') no-repeat center center/cover; /* Background image for the header */
+    padding: 40px 20px;
+    text-align: left; /* Title alignment to the left */
+    position: relative;
+    color: #191970; /* Title color */
+}
+
+.header h1 {
+    font-size: 2.5em;
+    font-family: Baskerville, serif; /* Title font change */
+}
+
+/* Navigation */
+.nav {
+    float: right; /* Navbar aligned to the right */
+    margin-top: 10px;
+}
+
+.nav a {
+    color: black; /* Nav bar link color */
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav a.active {
+    text-decoration: underline;
+}
+
+/* Diagnosis Form */
+.diagnosis-form {
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.diagnosis-form h2 {
+    margin-bottom: 10px;
+    color: #191970; /* Change text color to deep blue */
+}
+
+.diagnosis-form p {
+    margin-bottom: 20px;
+}
+
+.file-label {
+    display: inline-block;
+    background: #191970; /* Deep blue button background */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.btn {
+    background: #191970; /* Deep blue button background */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #45a049;
+}
+
+/* Result Section */
+.result {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #555;
+}
+
+/* Login Form */
+.login-form {
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-form h2 {
+    margin-bottom: 10px;
+    color: #191970; /* Deep blue text color */
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-form .btn {
+    background: #191970;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form .btn:hover {
+    background: #45a049;
+}
+
+/* Collapsible */
+.collapsible {
+    background: #191970;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    margin: 10px 0;
+    text-align: left;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+}
+
+.content {
+    display: none;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.content.active {
+    display: block;
+}
+
+/* Slideshow */
+.slideshow {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.slide {
+    display: none;
+    width: 100%;
+    height: auto;
+}
+
+.slide img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.slide.active {
+    display: block;
+}
+
+.slideshow-buttons {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.slideshow-buttons button {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 1.2em;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 10px;
+    background: #B9D9EB; /* Light blue footer background */
+    color: black;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .diagnosis-form,
+    .login-form {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .file-label, 
+    .btn {
+        width: 100%;
+    }
+
+    .nav {
+        float: none; /* Navbar goes below the title for smaller screens */
+        text-align: right;
+    }
+
+    .header h1 {
+        text-align: left; /* Ensure title stays aligned to the left in responsive view */
+    }
+
+    .header {
+        background: none; /* Remove background image from the content area */
+    }
+} 

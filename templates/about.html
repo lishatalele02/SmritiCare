@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - SmritiCare</title>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    background: url('/static/images/UI bg image_SmritiCAre.jpg') no-repeat center center/cover; /* Background image for the header */
+    padding: 11px 20px;
+    text-align: left; /* Title alignment to the left */
+    position: relative;
+    color: #191970; /* Title color */
+}
+
+.header h1 {
+    font-size: 2.5em;
+    font-family: Baskerville, serif; /* Title font change */
+}
+
+/* Navigation */
+.nav {
+    float: right; /* Navbar aligned to the right */
+    margin-top: -38px; /* Move tabs slightly upwards */
+}
+
+.nav a {
+    color: white; /* Nav bar link color */
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block; /* Box-like appearance */
+    padding: 5px 10px; /* Padding for box spacing */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #191970; /* Light blue background for tabs */
+    text-align: center; /* Center align text */
+}
+
+.nav a.active {
+    text-decoration: underline;
+    background-color: #191970; /* Same background color as other tabs */
+    color: white;
+}
+
+.nav a:hover {
+    background-color: #87CEFA; /* Change background on hover */
+    color: white; /* Text color on hover */
+}
+            
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .logo {
+            height: 40px; /* Adjust the size as needed */
+            margin-right: 15px;
+        }
+       
+        /* Content Styling */
+        .container {
+            padding: 20px;
+        }
+        .info-section {
+            margin-bottom: 30px;
+        }
+        .info-section h1, .info-section h2 {
+            color: #004d61;
+        }
+       
+        /* How To Use Section */
+        .how-to-use {
+            text-align: center;
+            padding: 20px;
+        }
+        .how-to-use h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .how-to-use p {
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 0 20px;
+        }
+        .step-box {
+            background-color: #e9f5f7;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1 1 300px;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .step-box img {
+            width: 50px;
+            margin-bottom: 15px;
+        }
+        .step-box h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: #004d61;
+        }
+        .step-box p {
+            font-size: 0.95rem;
+            color: #6c757d;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #B9D9EB; /* Light blue footer background */
+            color: black;
+            margin-top: 20px;
+         }
+        .body {
+            margin: 0;
+            padding: 0; /* Optional, also resets default padding */
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>SmritiCare</h1>
+        <nav class="nav">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('about') }}">About Us</a>
+            <a href="{{ url_for('index') }}">Diagnosis</a>
+            <a href="{{ url_for('faq') }}">FAQ</a>
+            {% if 'email' in session %}
+                <!-- Show Dashboard and Logout if user is logged in -->
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="#" onclick="confirmLogout()">Logout</a>
+            {% else %}
+                <!-- Show Login and Signup if user is not logged in -->
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('signup') }}">Signup</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- About Section -->
+    <div class="container">
+        <section class="info-section">
+            <h1>About Us</h1>
+            <h2>Our Mission</h2>
+            <p>
+                At SmritiCare, our mission is to provide accessible and accurate Alzheimer’s disease detection 
+                tools to individuals and healthcare professionals. We aim to utilize advanced deep learning models 
+                to aid early diagnosis, enabling timely intervention and better care for patients.
+            </p>
+        </section>
+
+        <section class="info-section">
+            <h2>Our Vision</h2>
+            <p>
+                Our vision is to create a future where Alzheimer’s disease is diagnosed at the earliest stage 
+                possible, reducing its impact on individuals and families. By combining innovation, data science, 
+                and medical expertise, SmritiCare aspires to revolutionize Alzheimer’s care globally.
+            </p>
+        </section>
+
+        <!-- How To Use Section -->
+        <section class="how-to-use">
+            <h1>How To Use</h1>
+            <p>Follow these simple steps to use the Alzheimer's Disease Prediction System effectively.</p>
+            <div class="steps-container">
+                <div class="step-box">
+                    <img src="https://img.icons8.com/ios-filled/50/004d61/login-rounded-right.png" alt="Log In">
+                    <h3>Log In</h3>
+                    <p>First, log in or sign up for an account to get started with the system.</p>
+                </div>
+                <div class="step-box">
+                    <img src="https://img.icons8.com/ios-filled/50/004d61/document.png" alt="Diagnosis">
+                    <h3>Diagnosis</h3>
+                    <p>Go to the diagnosis tab, fill in the required information, and upload an MRI scan image in .jpg or .png format.</p>
+                </div>
+                <div class="step-box">
+                    <img src="https://img.icons8.com/ios-filled/50/004d61/download.png" alt="Download Report">
+                    <h3>Submit and Download</h3>
+                    <p>Click on submit, and download your detailed diagnosis report instantly.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>&copy; 2025 SmritiCare. All rights reserved.</p>
+    </footer>
+</body>
+</html>

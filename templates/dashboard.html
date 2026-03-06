@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - SmritiCare</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: url('/static/images/UI bg image_SmritiCAre.jpg') no-repeat center center/cover;
+            padding: 11px 20px;
+            text-align: left;
+            position: relative;
+            color: #191970;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-family: Baskerville, serif;
+        }
+
+        .nav {
+            float: right;
+            margin-top: -38px;
+        }
+
+        .nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #191970;
+            text-align: center;
+        }
+
+        .nav a.active {
+            text-decoration: underline;
+            background-color: #191970;
+            color: white;
+        }
+
+        .nav a:hover {
+            background-color: #87CEFA;
+            color: white;
+        }
+
+        .dashboard-content {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-content h2 {
+            color: #191970;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-content h3 {
+            color: #191970;
+            margin-top: 20px;
+        }
+
+        .dashboard-content p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-content button {
+            background-color: #191970;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .dashboard-content button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #B9D9EB;
+            color: black;
+            margin-top: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .section ul li {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>SmritiCare</h1>
+        <nav class="nav">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('about') }}">About Us</a>
+            <a href="{{ url_for('index') }}">Diagnosis</a>
+            <a href="{{ url_for('faq') }}">FAQ</a>
+            {% if 'email' in session %}
+                <!-- Show Dashboard and Logout if user is logged in -->
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="#" onclick="confirmLogout()">Logout</a>
+            {% else %}
+                <!-- Show Login and Signup if user is not logged in -->
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('signup') }}">Signup</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="dashboard-content">
+        <!-- Edit Profile Modal -->
+        <div id="editProfileModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h3>Edit Profile</h3>
+            <form id="editProfileForm" onsubmit="updateProfile(event)">
+                <label for="editName">Name:</label>
+                <input type="text" id="editName" name="name" value="{{ patient_name }}" required>
+                <br><br>
+                <label for="editContact">Contact:</label>
+                <input type="text" id="editContact" name="contact" value="{{ patient_contact }}" required>
+                <br><br>
+                <button type="submit">Save Changes</button>
+                <button type="button" onclick="closeEditProfileModal()">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Schedule Appointment Modal -->
+        <div id="scheduleAppointmentModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h3>Schedule Appointment</h3>
+            <form id="scheduleAppointmentForm" onsubmit="submitAppointment(event)">
+                <label for="appointmentDate">Date:</label>
+                <input type="date" id="appointmentDate" name="date" required>
+                <br><br>
+                <label for="appointmentTime">Time:</label>
+                <input type="time" id="appointmentTime" name="time" required>
+                <br><br>
+                <label for="appointmentDoctor">Doctor:</label>
+                <input type="text" id="appointmentDoctor" name="doctor" required>
+                <br><br>
+                <button type="submit">Schedule</button>
+                <button type="button" onclick="closeScheduleAppointmentModal()">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Upload Document Modal -->
+        <div id="uploadDocumentModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h3>Upload Document</h3>
+            <form id="uploadDocumentForm" onsubmit="submitDocument(event)" enctype="multipart/form-data">
+                <label for="documentFile">Choose File:</label>
+                <input type="file" id="documentFile" name="file" required>
+                <br><br>
+                <button type="submit">Upload</button>
+                <button type="button" onclick="closeUploadDocumentModal()">Cancel</button>
+            </form>
+        </div>
+
+        <h2>Patient Dashboard</h2>
+
+        <!-- Personal Information -->
+        <div class="section">
+            <h3>Personal Information</h3>
+            <p><strong>Name:</strong> {{ patient_name }}</p>
+            <p><strong>Email:</strong> {{ patient_email }}</p>
+            <p><strong>Contact:</strong> {{ patient_contact }}</p>
+            <button onclick="editProfile()">Edit Profile</button>
+        </div>
+
+        <!-- Medical History -->
+        <div class="section">
+            <h3>Medical History</h3>
+            <ul>
+                <li><strong>Diagnosis:</strong> {{ patient_report }}</li>
+                <li><strong>Medications:</strong> {{ patient_medications or 'No medications recorded' }}</li>
+                <li><strong>Allergies:</strong> {{ patient_allergies or 'No allergies recorded' }}</li>
+            </ul>
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="section">
+            <h3>Upcoming Appointments</h3>
+            <ul>
+                {% if appointments %}
+                    {% for appointment in appointments %}
+                        <li>
+                            <strong>Date:</strong> {{ appointment.date }}<br>
+                            <strong>Time:</strong> {{ appointment.time }}<br>
+                            <strong>Doctor:</strong> {{ appointment.doctor }}
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>No upcoming appointments.</li>
+                {% endif %}
+            </ul>
+            <button onclick="scheduleAppointment()">Schedule Appointment</button>
+        </div>
+
+        <!-- Reports and Documents Section -->
+        <div class="section">
+            <h3>Reports and Documents</h3>
+            <ul>
+                {% if reports %}
+                    {% for report in reports %}
+                        <li>
+                            <strong>Report:</strong> {{ report.name }}<br>
+                            <strong>Date:</strong> {{ report.date }}<br>
+                            <a href="{{ report.link }}" target="_blank">Download</a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>No reports available.</li>
+                {% endif %}
+            </ul>
+            <button onclick="uploadDocument()">Upload Document</button>
+        </div>
+
+        <!-- Health Tips -->
+        <div class="section">
+            <h3>Health Tips</h3>
+            <ul>
+                <li>Exercise regularly to improve memory and cognitive function.</li>
+                <li>Follow a balanced diet rich in fruits, vegetables, and whole grains.</li>
+                <li>Stay socially active to reduce the risk of dementia.</li>
+            </ul>
+        </div>
+
+        <!-- Logout Button -->
+        <button onclick="confirmLogout()">Logout</button>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 SmritiCare. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function confirmLogout() {
+            if (confirm("Are you sure you want to log out from SmritiCare?")) {
+                window.location.href = "{{ url_for('logout') }}";
+            }
+        }
+
+        // Edit Profile
+        function editProfile() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('editName').value;
+            const contact = document.getElementById('editContact').value;
+
+            fetch('/update_profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, contact }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Profile updated successfully!');
+                    location.reload();  // Refresh the page to reflect changes
+                } else {
+                    alert('Failed to update profile.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Schedule Appointment
+        function scheduleAppointment() {
+            document.getElementById('scheduleAppointmentModal').style.display = 'block';
+        }
+
+        function closeScheduleAppointmentModal() {
+            document.getElementById('scheduleAppointmentModal').style.display = 'none';
+        }
+
+        function submitAppointment(event) {
+            event.preventDefault();
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const doctor = document.getElementById('appointmentDoctor').value;
+
+            fetch('/schedule_appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ date, time, doctor }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Appointment scheduled successfully!');
+                    location.reload();  // Refresh the page to reflect changes
+                } else {
+                    alert('Failed to schedule appointment.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Upload Document
+        function uploadDocument() {
+            document.getElementById('uploadDocumentModal').style.display = 'block';
+        }
+
+        function closeUploadDocumentModal() {
+            document.getElementById('uploadDocumentModal').style.display = 'none';
+        }
+
+        function submitDocument(event) {
+            event.preventDefault();
+            const formData = new FormData(document.getElementById('uploadDocumentForm'));
+
+            fetch('/upload_document', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Document uploaded successfully!');
+                    location.reload();  // Refresh the page to reflect changes
+                } else {
+                    alert('Failed to upload document.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

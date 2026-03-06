@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmritiCare - Home</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS -->
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    background: url('/static/images/UI bg image_SmritiCAre.jpg') no-repeat center center/cover;
+            padding: 11px 20px;
+            text-align: left;
+            position: relative;
+            color: #191970;
+        }
+
+.header h1 {
+    font-size: 2.5em;
+    font-family: Baskerville, serif; /* Title font change */
+}
+
+/* Navigation */
+.nav {
+    float: right; /* Navbar aligned to the right */
+    margin-top: -38px; /* Move tabs slightly upwards */
+}
+
+.nav a {
+    color: white; /* Nav bar link color */
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block; /* Box-like appearance */
+    padding: 5px 10px; /* Padding for box spacing */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #191970; /* Light blue background for tabs */
+    text-align: center; /* Center align text */
+}
+
+.nav a.active {
+    text-decoration: underline;
+    background-color: #191970; /* Same background color as other tabs */
+    color: white;
+}
+
+.nav a:hover {
+    background-color: #87CEFA; /* Change background on hover */
+    color: white; /* Text color on hover */
+}
+.hero-section {
+            background-color: #e9f5f7;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #004d61;
+        }
+
+
+        /* Slideshow styles */
+        .slideshow-container {
+            position: relative;
+            max-width: 100%;
+            margin: 20px auto;
+        }
+
+        .mySlides {
+            display: none;
+            width: 50%; /* Set image width to 50% of the container */
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .stages-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .stage-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stage-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stage-card h3 {
+            color: #004d61;
+            margin-bottom: 10px;
+        }
+
+        .stage-card p {
+            color: #6c757d;
+        }
+
+        /* Different Backgrounds for each stage */
+        .non-demented {
+            background-color: #c8e6c9;
+        }
+
+        .early-stage {
+            background-color: #fff9c4;
+        }
+
+        .mild-stage {
+            background-color: #ffecb3;
+        }
+
+        .moderate-stage {
+            background-color: #f8bbd0;
+        }
+
+        .severe-stage {
+            background-color: #f48fb1;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #B9D9EB; /* Light blue footer background */
+            color: black;
+            margin-top: 20px;
+         }
+         body {
+            margin: 0;
+            padding: 0; 
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>SmritiCare</h1>
+        <nav class="nav">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('about') }}">About Us</a>
+            <a href="{{ url_for('index') }}">Diagnosis</a>
+            <a href="{{ url_for('faq') }}">FAQ</a>
+            {% if 'email' in session %}
+                <!-- Show Dashboard and Logout if user is logged in -->
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="#" onclick="confirmLogout()">Logout</a>
+            {% else %}
+                <!-- Show Login and Signup if user is not logged in -->
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('signup') }}">Signup</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="hero-section">
+        <h1>Welcome to SmritiCare</h1>
+        <p>Your trusted healthcare platform for Alzheimer's detection. Upload your MRI scans to receive an accurate prediction of the Alzheimer's stage, helping you understand and manage the condition better.</p>
+
+        <!-- Slideshow -->
+        <div class="slideshow-container">
+            <img class="mySlides" src="/static/images/Smriticare_img1.jpg" alt="Image 1">
+            <img class="mySlides" src="/static/images/Smriticare_img2.jpg" alt="Image 2">
+            <img class="mySlides" src="/static/images/Smriticare_img3.jpg" alt="Image 3">
+        </div>
+    </div>
+
+    <section id="stages-of-alzheimers">
+        <h2 align="center">Understanding the Stages of Alzheimer's</h2>
+        <div class="stages-container">
+            <div class="stage-card non-demented">
+                <h3>Non-demented (Normal stage)</h3>
+                <p>No memory or thinking problems. The person functions normally in daily life.</p>
+            </div>
+            <div class="stage-card early-stage">
+                <h3>Very mild demented (Early stage)</h3>
+                <p>Some small memory lapses (like forgetting names or recent events). These are mild and don’t interfere much with daily tasks.</p>
+            </div>
+            <div class="stage-card mild-stage">
+                <h3>Mild demented (Mild stage)</h3>
+                <p>Memory problems become more noticeable. Trouble with planning, problem-solving, or remembering appointments. Daily tasks like cooking or managing money become harder.</p>
+            </div>
+            <div class="stage-card moderate-stage">
+                <h3>Moderate demented (Moderate stage)</h3>
+                <p>Memory loss is more severe. The person has trouble with more complex tasks, like driving or managing finances. They may also have trouble with language and getting lost in familiar places.</p>
+            </div>
+            <div class="stage-card severe-stage">
+                <h3>Severe demented (Late stage)</h3>
+                <p>Memory loss is very severe. The person has trouble with basic daily tasks, like eating or dressing. They may also have trouble with communication and may not recognize familiar people.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 SmritiCare. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Slideshow functionality
+        let slideIndex = 0;
+
+        function showSlides() {
+            let slides = document.getElementsByClassName("mySlides");
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}    
+            slides[slideIndex - 1].style.display = "block";  
+            setTimeout(showSlides, 3000); // Change image every 3 seconds
+        }
+
+        showSlides();
+    </script>
+</body>
+</html>

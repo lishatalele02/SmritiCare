@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs - SmritiCare</title>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    background: url('/static/images/UI bg image_SmritiCAre.jpg') no-repeat center center/cover; /* Background image for the header */
+    padding: 11px 20px;
+    text-align: left; /* Title alignment to the left */
+    position: relative;
+    color: #191970; /* Title color */
+}
+
+.header h1 {
+    font-size: 2.5em;
+    font-family: Baskerville, serif; /* Title font change */
+}
+
+/* Navigation */
+.nav {
+    float: right; /* Navbar aligned to the right */
+    margin-top: -38px; /* Move tabs slightly upwards */
+}
+
+.nav a {
+    color: white; /* Nav bar link color */
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block; /* Box-like appearance */
+    padding: 5px 10px; /* Padding for box spacing */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #191970; /* Same background for all tabs */
+    text-align: center; /* Center align text */
+}
+
+.nav a.active {
+    text-decoration: underline;
+    background-color: #191970; /* Same background as other tabs */
+    color: white;
+}
+
+.nav a:hover {
+    background-color: #87CEFA; /* Change background on hover */
+    color: white; /* Text color on hover */
+}
+
+/* FAQ Section */
+.faq-section {
+    margin-bottom: 30px;
+}
+
+.faq-section h2 {
+    color: #004d61;
+    margin-bottom: 20px;
+}
+
+.faq-item {
+    background-color: #e9f5f7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: #004d61;
+}
+
+.faq-item p {
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 10px;
+    background: #B9D9EB; /* Light blue footer background */
+    color: black;
+    margin-top: 20px;
+}
+body {
+            margin: 0;
+            padding: 0; 
+        }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>SmritiCare</h1>
+        <nav class="nav">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('about') }}">About Us</a>
+            <a href="{{ url_for('index') }}">Diagnosis</a>
+            <a href="{{ url_for('faq') }}">FAQ</a>
+            {% if 'email' in session %}
+                <!-- Show Dashboard and Logout if user is logged in -->
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="#" onclick="confirmLogout()">Logout</a>
+            {% else %}
+                <!-- Show Login and Signup if user is not logged in -->
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('signup') }}">Signup</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- FAQ Section -->
+    <div class="container">
+        <section class="faq-section">
+            <h2>FAQs</h2>
+
+            <div class="faq-item">
+                <h3>What is SmritiCare?</h3>
+                <p>SmritiCare is a platform designed to help in the early detection and diagnosis of Alzheimer’s disease using deep learning models and MRI scans.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>How does SmritiCare work?</h3>
+                <p>SmritiCare uses advanced deep learning algorithms to analyze MRI scans. The platform predicts the likelihood of Alzheimer’s disease and provides stage classification for better understanding and intervention.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Is the diagnosis 100% accurate?</h3>
+                <p>While our models are trained for high accuracy, no diagnosis system can guarantee 100% accuracy. Always consult with a healthcare professional for confirmation and further guidance.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>How can I upload MRI scans?</h3>
+                <p>You can upload MRI scans via the Diagnosis page. Simply fill the personal information and click on the "Choose MRI image" button, select and upload your MRI image, then click on "submit" button for analysis in diagnosis form.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Is SmritiCare free to use?</h3>
+                <p>Yes, SmritiCare is free to use for diagnosis purposes.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 SmritiCare. All rights reserved.</p>
+    </footer>
+</body>
+</html>
