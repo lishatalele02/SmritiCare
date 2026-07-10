@@ -21,7 +21,10 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 # Load the CNN model
-cnn_model = load_model(r'C:\Users\Admin\OneDrive\Desktop\SmritiCare-Diagnosis (UI and Connectivity)\cnn_model.h5')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "cnn_model.h5")
+
+cnn_model = load_model(MODEL_PATH)
 
 # Class labels for predictions
 class_labels = ["MildDemented", "ModerateDemented", "NonDemented", "VeryMildDemented"]
