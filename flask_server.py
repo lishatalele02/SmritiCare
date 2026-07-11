@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 import os
 import numpy as np
-from tensorflow.keras.models import load_model
+import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from PIL import Image
 from functools import wraps
@@ -20,11 +20,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# Load the CNN model
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "cnn_model.h5")
+MODEL_PATH = os.path.join(BASE_DIR, "cnn_model.tflite")
 
-cnn_model = load_model(MODEL_PATH)
+interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+interpreter.allocate_tensors()
+
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
 
 # Class labels for predictions
 class_labels = ["MildDemented", "ModerateDemented", "NonDemented", "VeryMildDemented"]
@@ -65,24 +68,29 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Process uploaded image
 def process_image(image_path):
-    img = Image.open(image_path).convert('RGB')
-    img = img.resize((128, 128))  
-    img_array = np.array(img) / 255.0  
-    img_array = np.expand_dims(img_array, axis=0)  
 
-    prediction = cnn_model.predict(img_array)
-    predicted_class = class_labels[np.argmax(prediction)]  
+    img = Image.open(image_path).convert("RGB")
+    img = img.resize((128, 128))
+
+    img_array = np.array(img, dtype=np.float32)
+    img_array /= 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+
+    interpreter.set_tensor(input_details[0]['index'], img_array)
+    interpreter.invoke()
+
+    prediction = interpreter.get_tensor(output_details[0]['index'])
+
+    predicted_class = class_labels[np.argmax(prediction)]
 
     return {
         "stage": predicted_class,
         "doctor": recommendations[predicted_class]["doctor"],
         "medicines": recommendations[predicted_class]["medicines"],
         "precautions": recommendations[predicted_class]["precautions"],
-        "description": recommendations[predicted_class]["description"]  
+        "description": recommendations[predicted_class]["description"]
     }
-
 # Routes
 @app.route('/')
 def login():
@@ -189,42 +197,53 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/predict', methods=['POST'])
+@login_required
 def predict():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file uploaded'}), 400
 
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
+        file = request.files['file']
 
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(filepath)
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
 
-    name = request.form.get('name', 'Unknown')
-    age = request.form.get('age', 'Unknown')
-    gender = request.form.get('gender', 'Unknown')
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-    # Process the uploaded image and get predictions
-    results = process_image(filepath)
+        file.save(filepath)
 
-    # Save the report for the logged-in user
-    if 'email' in session:
-        email = session['email']
-        if email in users:
-            users[email]['report'] = f"Alzheimer's Stage: {results['stage']}"  # Save the report
-            print(f"Report saved for {email}: {users[email]['report']}")  # Debug statement
+        name = request.form.get('name', 'Unknown')
+        age = request.form.get('age', 'Unknown')
+        gender = request.form.get('gender', 'Unknown')
 
-    # Redirect to the report page with all details
-    return redirect(url_for('report', 
-                            name=name, 
-                            age=age, 
-                            gender=gender, 
-                            mri_file=file.filename, 
-                            stage=results['stage'], 
-                            doctor=results['doctor'], 
-                            medicines=results['medicines'], 
-                            precautions=results['precautions'], 
-                            description=results['description']))  
+        results = process_image(filepath)
+
+        # Delete uploaded file after prediction
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+        if 'email' in session:
+            email = session['email']
+            if email in users:
+                users[email]['report'] = f"Alzheimer's Stage: {results['stage']}"
+
+        return redirect(url_for(
+            'report',
+            name=name,
+            age=age,
+            gender=gender,
+            mri_file=filename,
+            stage=results['stage'],
+            doctor=results['doctor'],
+            medicines=results['medicines'],
+            precautions=results['precautions'],
+            description=results['description']
+        ))
+
+    except Exception as e:
+        print("Prediction Error:", e)
+        return f"Prediction Error: {e}", 500
 
 @app.route('/report')
 def report():
