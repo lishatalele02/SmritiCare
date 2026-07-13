@@ -23,11 +23,18 @@ if not os.path.exists(UPLOAD_FOLDER):
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "cnn_model.tflite")
 
-interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
-interpreter.allocate_tensors()
+# Lazy-load the TFLite model to reduce startup time on Render
+interpreter = None
+input_details = None
+output_details = None
 
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
+def load_model():
+    global interpreter, input_details, output_details
+    if interpreter is None:
+        interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+        interpreter.allocate_tensors()
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
 
 # Class labels for predictions
 class_labels = ["MildDemented", "ModerateDemented", "NonDemented", "VeryMildDemented"]
@@ -69,6 +76,8 @@ def login_required(f):
     return decorated_function
 
 def process_image(image_path):
+
+    load_model()
 
     img = Image.open(image_path).convert("RGB")
     img = img.resize((128, 128))
@@ -219,9 +228,8 @@ def predict():
 
         results = process_image(filepath)
 
-        # Delete uploaded file after prediction
-        if os.path.exists(filepath):
-            os.remove(filepath)
+        # Keep uploaded image until the report page has been served.
+        # You can remove it later with a cleanup job if desired.
 
         if 'email' in session:
             email = session['email']
